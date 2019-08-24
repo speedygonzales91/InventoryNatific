@@ -1,4 +1,5 @@
-﻿using System;
+﻿using InventoryNatific.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,6 +9,17 @@ namespace InventoryNatific.Controllers
 {
     public class ProductsController : Controller
     {
+        private ApplicationDbContext _context;
+
+        public ProductsController()
+        {
+            _context = new ApplicationDbContext();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
         // GET: Products
         public ActionResult Index()
         {
