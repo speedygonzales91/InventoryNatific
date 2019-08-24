@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewBag.Title = "index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Statistics</h2>
+
+<br />
+
+<table id="stat" class="table table-bordered table-condensed">
+    <tbody>
+        <tr>
+            <td>Inventory Total Weight</td>
+            <td id="TotalWeight"></td>
+        </tr>
+        <tr>
+            <td>Inventory Total Value</td>
+            <td id="TotalSum"></td>
+        </tr>
+        <tr>
+            <td>Inventory Max number Product</td>
+            <td id="MaxNumberOfProductInInventory"></td>
+        </tr>
+        <tr>
+            <td>Inventory Max Weight Product</td>
+            <td id="MaxWeightOfProductInInventory"></td>
+        </tr>
+    </tbody>
+</table>
+
+@section scripts
+{
+    <script>
+        $.ajax({
+            type: "GET",
+            url: "@Url.Action("GetStatistics", "Statistics")",
+            success: function (result, status, xhr) {
+                console.log(result);
+                $("#TotalWeight").text(result["TotalWeight"] + " kg");
+                $("#TotalSum").text(result["TotalSum"] + " Ft");
+                $("#MaxNumberOfProductInInventory").text(result["MaxNumberOfProductInInventory"].Key["Name"] + " - " + result["MaxNumberOfProductInInventory"].Value + " pcs");
+                $("#MaxWeightOfProductInInventory").text(result["MaxWeightOfProductInInventory"].Key["Name"] + " - " + result["MaxWeightOfProductInInventory"].Value + " kg");
+            },
+            error: function (xhr, status, error) {
+                console.log(status);
+            }
+        })
+    </script>
+
+}
