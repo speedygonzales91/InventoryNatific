@@ -1,0 +1,55 @@
+﻿@model InventoryNatific.Models.Product
+
+@{
+    ViewBag.Title = "ProductSave";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.Id == 0)
+{
+    <h2>Add New Product</h2>
+}
+else
+{
+    <h2>Edit Product</h2>
+}
+
+<hr />
+
+@using (Html.BeginForm("Save", "Products"))
+{
+    @Html.HiddenFor(p => p.Id);
+
+    <div class="form-group">
+        @Html.LabelFor(p => p.Name)
+        @Html.TextBoxFor(p => p.Name, new { @class = "form-control"})
+    </div>
+
+    <div class="form-group" style="width: 280px">
+    @Html.LabelFor(p => p.Price)
+    <div class="input-group">
+        <span class="input-group-addon">$</span>
+        @Html.TextBoxFor(p => p.Price, new { @class = "form-control" })
+    </div>
+    </div>
+
+    @*<div class="form-group">
+        @Html.LabelFor(p => p.Weight)
+        @Html.TextBoxFor(p => p.Weight, new { @class = "form-control" })
+    </div>*@
+
+
+    <div class="form-group" style="width: 280px">
+    @Html.LabelFor(p => p.Weight)
+        <div class="input-group">
+            @Html.TextBoxFor(p => p.Weight, new { @class = "form-control" })
+            <span class="input-group-addon">kg</span>
+        </div>
+    </div>
+
+    <div class="form-group" style="width: 500px">
+        @Html.LabelFor(p => p.Description)
+        @Html.TextAreaFor(p => p.Description, new { @class = "form-control", @rows = 4 })
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+}
