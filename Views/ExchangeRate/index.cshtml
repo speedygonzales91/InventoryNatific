@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<p>Real Time EUR/HUF Exchange Rate:</p>
+<p id="euro" class="lead text-success"></p>
+
+<p>
+    Source:
+<p>
+<p>
+    <a href="http://www.mnb.hu/arfolyamok.asmx"><img src="~/Content/MNB_Logo.png" alt="Image" width="100" /></a>
+</p>
+
+@section scripts
+{
+    <script>
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetEuroRate", "ExchangeRate")",
+            success: function (result, status, xhr) {
+                    $("#euro").text(result); },
+            error: function (xhr, status, error) {
+                    $("#euro").text(status); }
+        })
+    </script>
+}
