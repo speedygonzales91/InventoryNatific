@@ -1,0 +1,32 @@
+﻿@model InventoryNatific.Models.InventoryViewModel
+@{
+    ViewBag.Title = "InventorySave";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (Model.Inventory.Id == 0)
+{
+    <h2>Upload Product Inventory</h2>
+}
+else
+{
+    <h2>Edit Product Inventory</h2>
+}
+
+
+@using (Html.BeginForm("Save", "Inventory"))
+{
+    @Html.HiddenFor(i => i.Inventory.Id)
+
+    <div class="form-group">
+        @Html.LabelFor(i => i.Inventory.ProductId)
+        @Html.DropDownListFor(i => i.Inventory.ProductId, new SelectList(Model.Products, "Id", "Name"), "Select Product", new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(i => i.Inventory.Amount)
+        @Html.TextBoxFor(i => i.Inventory.Amount, new { @class = "form-control" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+}
