@@ -18,3 +18,31 @@
     </thead>
     <tbody></tbody>
 </table>
+
+@section scripts {
+
+    <script>
+        $(document).ready(function () {
+            $("#products").dataTable({
+                ajax: {
+                    url: "@Url.Action("GetProducts", "Products")",
+                    dataSrc: ""
+                },
+                columns:
+                    [
+                        { data: "Name" },
+                        { data: "Price" },
+                        { data: "Description" },
+                        { data: "Weight" },
+                        {
+                            render: function (data, type, full, meta) {
+                            return '<a id='+ full.Id +' href=@Url.Action("Edit","Products")' + '/' +full.Id + '> Edit</a>';
+                        }
+                        }
+                    ]
+            })
+
+        })
+    </script>
+
+}

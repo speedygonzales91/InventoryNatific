@@ -10,9 +10,9 @@ namespace InventoryNatific
         {
             bundles.Add(new ScriptBundle("~/bundles/lib").Include(
                         "~/Scripts/jquery-{version}.js",
-                        "~/ Scripts / bootstrap.js",
-                        "~/ Scripts/DataTables/jquery.datatables.js",
-                        "~/ Scripts/DataTables/bootstrap.datatables.js"));
+                        "~/Scripts /bootstrap.js",
+                        "~/Scripts/DataTables/jquery.dataTables.js",
+                        "~/Scripts/DataTables/datatables.bootstrap.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));

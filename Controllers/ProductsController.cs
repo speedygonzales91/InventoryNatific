@@ -25,5 +25,12 @@ namespace InventoryNatific.Controllers
         {
             return View();
         }
+
+        public ActionResult GetProducts()
+        {
+            var products = _context.Products.ToList();
+            return Json(products, JsonRequestBehavior.AllowGet);
+
+        }
     }
 }
