@@ -22,6 +22,8 @@ namespace InventoryNatific.Models
     {
         public DbSet<Product> Products { get; set; }
 
+        public DbSet<Inventory> Inventories { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
