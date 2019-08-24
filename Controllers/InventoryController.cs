@@ -74,7 +74,7 @@ namespace InventoryNatific.Controllers
                     ProductId = inventory.ProductId,
                     Amount = inventory.Amount,
                 };
-                return View("New", inValidInventory);
+                return View("InventorySave", inValidInventory);
             }
 
             if (inventory.Id == 0)
@@ -101,7 +101,7 @@ namespace InventoryNatific.Controllers
             }
 
             _context.SaveChanges();
-            return RedirectToAction("Index", "Inventories");
+            return RedirectToAction("Index", "Inventory");
         }
 
         // delete /Inventories/1

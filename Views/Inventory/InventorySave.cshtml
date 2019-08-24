@@ -4,6 +4,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@Html.ValidationSummary()
+
+<hr />
+
 @if (Model.Inventory.Id == 0)
 {
     <h2>Upload Product Inventory</h2>
@@ -21,6 +25,7 @@ else
     <div class="form-group">
         @Html.LabelFor(i => i.Inventory.ProductId)
         @Html.DropDownListFor(i => i.Inventory.ProductId, new SelectList(Model.Products, "Id", "Name"), "Select Product", new { @class = "form-control" })
+        @Html.ValidationMessageFor(i => i.Inventory.ProductId)
     </div>
 
     <div class="form-group">
@@ -29,4 +34,8 @@ else
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
 }
