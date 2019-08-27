@@ -1,4 +1,4 @@
-﻿@model InventoryNatific.Models.Product
+﻿@model InventoryNatific.Dtos.ProductDto
 
 @{
     ViewBag.Title = "ProductSave";
@@ -14,6 +14,8 @@ else
     <h2>Edit Product</h2>
 }
 
+@Html.ValidationSummary()
+
 <hr />
 
 @using (Html.BeginForm("Save", "Products"))
@@ -22,34 +24,41 @@ else
 
     <div class="form-group">
         @Html.LabelFor(p => p.Name)
-        @Html.TextBoxFor(p => p.Name, new { @class = "form-control"})
+        @Html.TextBoxFor(p => p.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(p => p.Name)
     </div>
 
     <div class="form-group" style="width: 280px">
-    @Html.LabelFor(p => p.Price)
-    <div class="input-group">
-        <span class="input-group-addon">$</span>
-        @Html.TextBoxFor(p => p.Price, new { @class = "form-control" })
-    </div>
+        @Html.LabelFor(p => p.Price)
+        <div class="input-group">
+            <span class="input-group-addon">$</span>
+            @Html.TextBoxFor(p => p.Price, new { @class = "form-control" })
+        </div>
+        @Html.ValidationMessageFor(p => p.Price)
     </div>
 
     @*<div class="form-group">
-        @Html.LabelFor(p => p.Weight)
-        @Html.TextBoxFor(p => p.Weight, new { @class = "form-control" })
-    </div>*@
-
-
-    <div class="form-group" style="width: 280px">
-    @Html.LabelFor(p => p.Weight)
-        <div class="input-group">
+            @Html.LabelFor(p => p.Weight)
             @Html.TextBoxFor(p => p.Weight, new { @class = "form-control" })
-            <span class="input-group-addon">kg</span>
-        </div>
+        </div>*@
+
+
+<div class="form-group" style="width: 280px">
+    @Html.LabelFor(p => p.Weight)
+    <div class="input-group">
+        @Html.TextBoxFor(p => p.Weight, new { @class = "form-control" })
+        <span class="input-group-addon">kg</span>
     </div>
+    @Html.ValidationMessageFor(p => p.Weight)
+</div>
 
     <div class="form-group" style="width: 500px">
         @Html.LabelFor(p => p.Description)
         @Html.TextAreaFor(p => p.Description, new { @class = "form-control", @rows = 4 })
     </div>
     <button type="submit" class="btn btn-primary">Save</button>
+}
+
+@section scripts {
+    @Scripts.Render("~/bundles/jqueryval")
 }

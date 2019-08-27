@@ -26,16 +26,14 @@ namespace InventoryNatific.Controllers
         {
             return View();
         }
+
+        // GET: Statistics/GetStatistics
         public ActionResult GetStatistics()
         {
-
-            //double totalValue = 0;
-            //Dictionary<string, int> maxNumberOfProduct = new Dictionary<string, int>();
-
-            Statistics stat = new Statistics();
+            var stat = new Statistics();
 
             var euro = new ExchangeRateController().GetEuroRate();
-            foreach (var inventory in _context.Inventories.Include(p => p.Product).ToList())
+            foreach (var inventory in _context.Inventory.Include(p => p.Product).ToList())
             {
                 stat.TotalWeight += inventory.Product.Weight;
                 stat.TotalSum += inventory.Product.Price * Convert.ToDouble(euro);
@@ -50,9 +48,7 @@ namespace InventoryNatific.Controllers
                     stat.MaxWeightOfProductInInventory = new KeyValuePair<Product, double>(inventory.Product, inventory.Product.Weight);
                 }
             }
-
             return Json(stat, JsonRequestBehavior.AllowGet);
-
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model InventoryNatific.Models.InventoryViewModel
+﻿@model InventoryNatific.ViewModels.InventoryEditViewModel
 @{
     ViewBag.Title = "InventorySave";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,7 +8,7 @@
 
 <hr />
 
-@if (Model.Inventory.Id == 0)
+@if (Model.InventoryElement.Id == 0)
 {
     <h2>Upload Product Inventory</h2>
 }
@@ -20,17 +20,17 @@ else
 
 @using (Html.BeginForm("Save", "Inventory"))
 {
-    @Html.HiddenFor(i => i.Inventory.Id)
+    @Html.HiddenFor(i => i.InventoryElement.Id)
 
     <div class="form-group">
-        @Html.LabelFor(i => i.Inventory.ProductId)
-        @Html.DropDownListFor(i => i.Inventory.ProductId, new SelectList(Model.Products, "Id", "Name"), "Select Product", new { @class = "form-control" })
-        @Html.ValidationMessageFor(i => i.Inventory.ProductId)
+        @Html.LabelFor(i => i.InventoryElement.ProductId)
+        @Html.DropDownListFor(i => i.InventoryElement.ProductId, new SelectList(Model.Products, "Id", "Name"), "Select Product", new { @class = "form-control" })
+        @Html.ValidationMessageFor(i => i.InventoryElement.ProductId)
     </div>
 
     <div class="form-group">
-        @Html.LabelFor(i => i.Inventory.Amount)
-        @Html.TextBoxFor(i => i.Inventory.Amount, new { @class = "form-control" })
+        @Html.LabelFor(i => i.InventoryElement.Amount)
+        @Html.TextBoxFor(i => i.InventoryElement.Amount, new { @class = "form-control" })
     </div>
 
     <button type="submit" class="btn btn-primary">Save</button>

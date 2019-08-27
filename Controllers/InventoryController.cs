@@ -4,6 +4,10 @@ using System.Data.Entity;
 using System.Web.Mvc;
 using System.Net;
 using System.Web.Http;
+using AutoMapper;
+using System.Collections.Generic;
+using InventoryNatific.Dtos;
+using InventoryNatific.ViewModels;
 
 namespace InventoryNatific.Controllers
 {
@@ -30,89 +34,110 @@ namespace InventoryNatific.Controllers
         // GET: Inventories/GetInventories
         public ActionResult GetInventories()
         {
-            var inventories = _context.Inventories.Include(p => p.Product).ToList();
-            return Json(inventories, JsonRequestBehavior.AllowGet);
+            var inventoryElements = _context.Inventory.Include(p => p.Product).ToList();
+            var inventoryElementDtos = new List<InventoryElementDto>();
+            foreach (var inventoryElement in inventoryElements)
+            {
+                inventoryElementDtos.Add(Mapper.Map<InventoryElement, InventoryElementDto>(inventoryElement));
+            }
+            return Json(inventoryElementDtos, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Inventories/New
         public ActionResult New()
         {
             var products = _context.Products.ToList();
-            var inventoryViewModel = new InventoryViewModel()
+
+            var productDtos = new List<ProductDto>();
+            foreach (var product in products)
             {
-                Products = products,
-                Inventory = new Inventory()
+                productDtos.Add(Mapper.Map<Product, ProductDto>(product));
+            }
+
+            var inventoryEditViewModel = new InventoryEditViewModel()
+            {
+                Products = productDtos,
+                InventoryElement = new InventoryElementDto()
 
             };
-            return View("InventorySave", inventoryViewModel);
+            return View("InventorySave", inventoryEditViewModel);
         }
 
-        // GET: Inventories/Edit/1
+        // GET: Inventories/Edit/{id}
         public ActionResult Edit(int id)
         {
             var products = _context.Products.ToList();
-            var inventory = _context.Inventories.Find(id);
-            var inventoryViewModel = new InventoryViewModel()
+            var inventoryElement = _context.Inventory.Find(id);
+
+            var productDtos = new List<ProductDto>();
+            foreach (var product in products)
             {
-                Products = products,
-                Inventory = inventory
+                productDtos.Add(Mapper.Map<Product, ProductDto>(product));
+            }
+
+            var inventoryElementDto = Mapper.Map<InventoryElement, InventoryElementDto>(inventoryElement);
+
+            var inventoryEditViewModel = new InventoryEditViewModel()
+            {
+                Products = productDtos,
+                InventoryElement = inventoryElementDto
 
             };
-            return View("InventorySave", inventoryViewModel);
+            return View("InventorySave", inventoryEditViewModel);
         }
 
         // GET: Inventories/Save
-        public ActionResult Save(Inventory inventory)
+        public ActionResult Save(InventoryEditViewModel inventoryEditViewModel)
         {
+            var inventoryElementDto = inventoryEditViewModel.InventoryElement;
             if (!ModelState.IsValid)
             {
-                var inValidInventory = new Inventory()
+                var invalidInventoryElement = new InventoryElement()
                 {
-                    ProductId = inventory.ProductId,
-                    Amount = inventory.Amount,
+                    ProductId = inventoryElementDto.ProductId,
+                    Amount = inventoryElementDto.Amount,
                 };
-                return View("InventorySave", inValidInventory);
+                return View("InventorySave", invalidInventoryElement);
             }
 
-            if (inventory.Id == 0)
+            if (inventoryElementDto.Id == 0)
             {
-                var inventoryProduct = _context.Inventories.SingleOrDefault(i => i.ProductId == inventory.ProductId);
+                var inventoryProduct = _context.Inventory.SingleOrDefault(i => i.ProductId == inventoryElementDto.ProductId);
                 if (inventoryProduct != null)
                 {
-                    inventoryProduct.Amount += inventory.Amount;
+                    inventoryProduct.Amount += inventoryElementDto.Amount;
                 }
                 else
                 {
-                    inventory.Product = _context.Products.SingleOrDefault(p => p.Id == inventory.ProductId);
-                    _context.Inventories.Add(inventory);
+                    _context.Inventory.Add(Mapper.Map<InventoryElementDto,InventoryElement>(inventoryElementDto));
                 }
 
             }
             else
             {
-                var inventoryInDb = _context.Inventories.Single(i => i.Id == inventory.Id);
-                inventoryInDb.Amount = inventory.Amount;
-                inventoryInDb.Id = inventory.Id;
-                inventoryInDb.ProductId = inventory.ProductId;
-                inventoryInDb.Product = inventory.Product;
+                
+                var inventoryEntity = _context.Inventory.Find(inventoryElementDto.Id);
+                inventoryEntity.Amount = inventoryElementDto.Amount;
+                inventoryEntity.ProductId = inventoryElementDto.ProductId;
+                inventoryEntity.Product = Mapper.Map<ProductDto,Product>(inventoryElementDto.Product);
             }
 
             _context.SaveChanges();
             return RedirectToAction("Index", "Inventory");
         }
 
-        // delete /Inventories/1
+        // DELETE: Inventories/DeleteInventory/{id}
         [System.Web.Http.HttpDelete]
         public void DeleteInventory(int id)
         {
-            var inventoryToDelete = _context.Inventories.SingleOrDefault(i => i.Id == id);
+            var inventoryToDelete = _context.Inventory.SingleOrDefault(i => i.Id == id);
 
             if (inventoryToDelete == null)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
 
-            _context.Inventories.Remove(inventoryToDelete);
+            _context.Inventory.Remove(inventoryToDelete);
             _context.SaveChanges();
 
         }

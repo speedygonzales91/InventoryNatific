@@ -1,12 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InventoryNatific.Models
 {
-    public class Inventory
+    [Table("Inventory")]
+    public class InventoryElement
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Please select valid Product")]
+        [Required]
         public int ProductId { get; set; }
 
         public Product Product { get; set; }

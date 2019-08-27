@@ -1,5 +1,10 @@
-﻿using InventoryNatific.Models;
+﻿using AutoMapper;
+using InventoryNatific.Dtos;
+using InventoryNatific.Models;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Web.Http;
 using System.Web.Mvc;
 
 namespace InventoryNatific.Controllers
@@ -27,54 +32,77 @@ namespace InventoryNatific.Controllers
         public ActionResult GetProducts()
         {
             var products = _context.Products.ToList();
-            return Json(products, JsonRequestBehavior.AllowGet);
+            var productDtos = new List<ProductDto>();
 
+            foreach (var product in products)
+            {
+                productDtos.Add(Mapper.Map<Product, ProductDto>(product));
+            }
+
+            return Json(productDtos, JsonRequestBehavior.AllowGet);
         }
 
         // GET: Products/New
         public ActionResult New()
         {
-            var product = new Product();
-            return View("ProductSave", product);
+            var productDto = new ProductDto();
+            return View("ProductSave", productDto);
         }
 
-        // GET: Products/Edit/1
+        // GET: Products/Edit/{id}
         public ActionResult Edit(int id)
         {
             var product = _context.Products.Find(id);
-            return View("ProductSave", product);
+            var productDto = Mapper.Map<Product, ProductDto>(product);
+            return View("ProductSave", productDto);
         }
 
 
-        public ActionResult Save(Product product)
+        public ActionResult Save(ProductDto productDto)
         {
             if (!ModelState.IsValid)
             {
-                var inValidProduct = new Product()
+                var invalidProductDto = new ProductDto()
                 {
-                    Name = product.Name,
-                    Weight = product.Weight,
-                    Price = product.Price,
-                    Description = product.Description
+                    Name = productDto.Name,
+                    Weight = productDto.Weight,
+                    Price = productDto.Price,
+                    Description = productDto.Description
                 };
-                return View("New", inValidProduct);
+                return View("index", invalidProductDto);
             }
 
-            if (product.Id == 0)
+            if (productDto.Id == 0)
             {
-                _context.Products.Add(product);
+                _context.Products.Add(Mapper.Map<ProductDto,Product>(productDto));
             }
             else
             {
-                var productInDb = _context.Products.Single(p => p.Id == product.Id);
-                productInDb.Name = product.Name;
-                productInDb.Weight = product.Weight;
-                productInDb.Price = product.Price;
-                productInDb.Description = product.Description;
+                var productEntity = _context.Products.Find(productDto.Id);
+                productEntity.Name = productDto.Name;
+                productEntity.Weight = productDto.Weight;
+                productEntity.Price = productDto.Price;
+                productEntity.Description = productDto.Description;
             }
 
             _context.SaveChanges();
             return RedirectToAction("Index", "Products");
+        }
+
+        // DELETE: Products/DeleteProduct/{id}
+        [System.Web.Http.HttpDelete]
+        public void DeleteProduct(int id)
+        {
+            var productToDelete = _context.Products.SingleOrDefault(i => i.Id == id);
+
+            if (productToDelete == null)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+
+            _context.Products.Remove(productToDelete);
+            _context.SaveChanges();
+
         }
     }
 }
